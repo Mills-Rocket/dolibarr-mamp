@@ -865,10 +865,29 @@ class pdf_crabe extends ModelePDFFactures
 				// Display total area
 				$posy = $this->_tableau_tot($pdf, $object, $deja_regle, $bottomlasttab, $outputlangs, $outputlangsbis);
 
-				// Display Payments area
-				if (($deja_regle || $amount_credit_notes_included || $amount_deposits_included) && !getDolGlobalString('INVOICE_NO_PAYMENT_DETAILS')) {
-					$posy = $this->_tableau_versements($pdf, $object, $posy, $outputlangs, $heightforfooter);
-				}
+				
+				// Ajouter le lien de paiement
+if (!empty($object->bank_account_link)) {
+    // Ajuster la position en fonction du contenu précédent
+    $adjustment = -40; // Ajustement dynamique pour remonter légèrement
+    $posy = max($posy - $adjustment, $this->marge_haute); // Empêche de dépasser la marge haute
+
+    // Vérifiez si le lien est trop proche du pied de page
+   // if ($posy + 10 > $heightforfooter) {
+      //  $pdf->AddPage(); // Nouvelle page si nécessaire
+     //   $posy = $this->marge_haute; // Réinitialisez pour la nouvelle page
+  //  }
+
+    // Afficher le lien
+    $pdf->SetXY($this->marge_gauche, $posy);
+    $pdf->MultiCell(190, 5, "Lien de paiement : " . $object->bank_account_link, 0, 'L');
+    $posy += 10; // Ajustez la position pour les éléments suivants
+}
+
+				
+				
+
+
 
 				// Pagefoot
 				$this->_pagefoot($pdf, $object, $outputlangs, 0, $this->getHeightForQRInvoice($pdf->getPage(), $object, $langs));

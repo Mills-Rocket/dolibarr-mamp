@@ -5,6 +5,12 @@
 // Take a look at conf.php.example file for an example of conf.php file
 // and explanations for all possibles parameters.
 //
+
+/////////// AJOUT /////////// 9/01/25
+$dolibarr_main_log_handler = 'file';
+$dolibarr_main_log_file = 'logs/dolibarr.log';
+$dolibarr_main_log_level = 'DEBUG';
+
 $dolibarr_main_url_root='http://localhost:8887/dolibarr/htdocs';
 $dolibarr_main_document_root="/Applications/MAMP/htdocs/dolibarr/htdocs";
 $dolibarr_main_url_root_alt='/custom';

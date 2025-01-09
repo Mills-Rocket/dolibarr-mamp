@@ -2201,6 +2201,93 @@ class Facture extends CommonInvoice
 				$this->cond_reglement		= $obj->cond_reglement_libelle;
 				$this->cond_reglement_doc = $obj->cond_reglement_libelle_doc;
 				$this->fk_account = ($obj->fk_account > 0) ? $obj->fk_account : null;
+				
+				if (!empty($this->fk_account)) {
+					// Construire la requête SQL pour récupérer le lien
+					$sql_extrafield = "SELECT lien_de_paiement FROM ".MAIN_DB_PREFIX."bank_account_extrafields WHERE fk_object = ".$this->fk_account;
+    $resql_extrafield = $this->db->query($sql_extrafield);
+    if ($resql_extrafield) {
+        $obj_extrafield = $this->db->fetch_object($resql_extrafield);
+		dol_syslog("Lien de paiement récupéré 1 : " . $this->bank_account_link, LOG_DEBUG);
+
+        if ($obj_extrafield && !empty($obj_extrafield->lien_de_paiement)) {
+            $this->bank_account_link = $obj_extrafield->lien_de_paiement;
+			dol_syslog("Lien de paiement récupéré 2 : " . $this->bank_account_link, LOG_DEBUG);
+
+        }
+    }
+					// Log de la requête avant exécution
+					dol_syslog("SQL query about to execute: " . $sql_extrafield, LOG_DEBUG);
+					file_put_contents(
+						'/Applications/MAMP/htdocs/dolibarr/htdocs/compta/facture/class/logs/dolibarr.log',
+						"Requête SQL (avant exécution) : " . $sql_extrafield . "\n",
+						FILE_APPEND
+					);
+				
+					// Utiliser un drapeau pour éviter les exécutions multiples
+					static $execution_tracker = [];
+					if (!in_array($this->fk_account, $execution_tracker)) {
+						// Ajouter l'ID actuel au tableau des exécutions
+						$execution_tracker[] = $this->fk_account;
+				
+						// Exécution de la requête
+						$resql_extrafield = $this->db->query($sql_extrafield);
+						if ($resql_extrafield) {
+							$obj_extrafield = $this->db->fetch_object($resql_extrafield);
+							if ($obj_extrafield && !empty($obj_extrafield->lien_de_paiement)) {
+								// Assigner le lien récupéré
+								$this->bank_account_link = $obj_extrafield->lien_de_paiement;
+				
+								// Log du lien récupéré
+								dol_syslog("Bank account payment link retrieved: " . $this->bank_account_link, LOG_DEBUG);
+								file_put_contents(
+									'/Applications/MAMP/htdocs/dolibarr/htdocs/compta/facture/class/logs/dolibarr.log',
+									"Lien récupéré : " . $this->bank_account_link . "\n",
+									FILE_APPEND
+								);
+							} else {
+								// Aucun lien trouvé
+								dol_syslog("No payment link found for fk_account=" . $this->fk_account, LOG_WARNING);
+								file_put_contents(
+									'/Applications/MAMP/htdocs/dolibarr/htdocs/compta/facture/class/logs/dolibarr.log',
+									"Aucun lien trouvé pour fk_account=" . $this->fk_account . "\n",
+									FILE_APPEND
+								);
+							}
+						} else {
+							// Erreur lors de l'exécution de la requête
+							dol_syslog("SQL error: " . $this->db->lasterror(), LOG_ERR);
+							file_put_contents(
+								'/Applications/MAMP/htdocs/dolibarr/htdocs/compta/facture/class/logs/dolibarr.log',
+								"Erreur SQL : " . $this->db->lasterror() . "\nRequête SQL : " . $sql_extrafield . "\n",
+								FILE_APPEND
+							);
+						}
+					} else {
+						// Éviter les exécutions répétées
+						dol_syslog("Execution skipped for fk_account=" . $this->fk_account, LOG_DEBUG);
+						file_put_contents(
+							'/Applications/MAMP/htdocs/dolibarr/htdocs/compta/facture/class/logs/dolibarr.log',
+							"Exécution ignorée pour fk_account=" . $this->fk_account . "\n",
+							FILE_APPEND
+						);
+					}
+				} else {
+					// fk_account est vide ou invalide
+					dol_syslog("Invalid or empty fk_account: " . $this->fk_account, LOG_WARNING);
+					file_put_contents(
+						'/Applications/MAMP/htdocs/dolibarr/htdocs/compta/facture/class/logs/dolibarr.log',
+						"Valeur de fk_account invalide ou vide : " . $this->fk_account . "\n",
+						FILE_APPEND
+					);
+				}
+				
+				
+				
+				
+				
+				
+
 				$this->fk_facture_source	= $obj->fk_facture_source;
 				$this->fk_fac_rec_source	= $obj->fk_fac_rec_source;
 				$this->note = $obj->note_private; // deprecated

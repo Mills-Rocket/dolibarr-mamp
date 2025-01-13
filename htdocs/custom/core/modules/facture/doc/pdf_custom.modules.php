@@ -889,9 +889,7 @@ if (getDolGlobalString('INVOICE_ADD_EPC_QR_CODE') == '1' && (empty($object->mode
 				// Display total area
 				$posy = $this->_tableau_tot($pdf, $object, $deja_regle, $bottomlasttab, $outputlangs, $outputlangsbis);
 
-				
-				// Ajouter le lien de paiement
-				if (!empty($object->bank_account_link)) {
+				if (!empty($object->bank_account_link) || !empty($object->bank_account_link_bitcoin) || !empty($object->bank_account_link_ethereum)) {
 					// **1. QR code et texte "Scanner le QRCODE pour payer par virement" à gauche**
 					// Dimensions du QR code
 					$width_qr = 15; // Largeur du QR code
@@ -925,74 +923,58 @@ if (getDolGlobalString('INVOICE_ADD_EPC_QR_CODE') == '1' && (empty($object->mode
 					$pdf->SetFont('', '', 10); // Texte standard
 					$pdf->MultiCell($text_width, 5, "Scanner le QRCODE\npour payer par virement", 0, 'L'); // Texte aligné à gauche
 				
-					// **2. Bouton de paiement à droite, aligné sous le total**
-					// Dimensions et position du bouton
+					
+					// Dimensions des boutons
 					$button_width = 60; // Largeur du bouton
-					$button_height = 10; // Hauteur du bouton
-				
-					// Récupérer la position du total
-					// Si `$posy_total` est défini par ton modèle, utilise-le. Sinon, définis une valeur par défaut.
-					$posy_total = isset($tab_top_total) ? $tab_top_total : $pdf->getPageHeight() - 80;
-				
-					// Calculer la position sous le total
+					$button_height = 8; // Hauteur ajustée pour deux lignes
 					$posx_button = $pdf->getPageWidth() - $this->marge_droite - $button_width; // Aligné à droite
-					$posy_button = $posy_total + 5; // Ajouter une marge de 10 points sous le total
+					$posy_button = $pdf->getPageHeight() - $button_height - 60; // Position initiale du premier bouton
 				
-					// URL du bouton
-					$payment_url = $object->bank_account_link;
+					// Liste des liens et styles associés
+					$links = [
+						[
+							'url' => $object->bank_account_link ?? null,
+							'text' => "Payer en cryptomonnaie",
+							'color' => [186, 148, 64], // Orange
+						],
+						[
+							'url' => $object->bank_account_link_bitcoin ?? null,
+							'text' => "Payer en Bitcoin",
+							'color' => [186, 148, 64], // Vert
+						],
+						[
+							'url' => $object->bank_account_link_ethereum ?? null,
+							'text' => "Payer en Ethereum",
+							'color' => [186, 148, 64], // Bleu
+						]
+					];
 				
-					// Style du bouton
-					$pdf->SetFillColor(186, 148, 64); // Couleur de fond (#ba9440)
-					$pdf->SetDrawColor(186, 148, 64); // Couleur de la bordure
-					$pdf->SetTextColor(255, 255, 255); // Texte blanc
-					$pdf->SetFont('', 'B', 10); // Texte en gras
+					// Boucle pour afficher les boutons
+					foreach ($links as $link) {
+						if (!empty($link['url'])) {
+							// Couleurs du bouton
+							[$r, $g, $b] = $link['color'];
+							$pdf->SetFillColor($r, $g, $b); // Fond
+							$pdf->SetDrawColor($r, $g, $b); // Bordure
+							$pdf->SetTextColor(255, 255, 255); // Texte blanc
 				
-					// Dessiner le bouton
-					$pdf->SetXY($posx_button, $posy_button);
-					$pdf->Cell($button_width, $button_height, "Payer en cryptomonnaie", 1, 1, 'C', 1); // Texte centré, encadré et avec un fond coloré
+							// Ajouter le bouton
+							$pdf->SetXY($posx_button, $posy_button);
+							$pdf->MultiCell($button_width, 8, $link['text'], 1, 'C', 1);
+							$pdf->Link($posx_button, $posy_button, $button_width, $button_height, $link['url']);
 				
-					// Ajouter un lien cliquable
-					$pdf->Link($posx_button, $posy_button, $button_width, $button_height, $payment_url);
-				
-					// Réinitialiser les couleurs pour le reste du PDF
-					$pdf->SetTextColor(0, 0, 0); // Texte noir par défaut
-					$pdf->SetFillColor(255, 255, 255); // Fond blanc par défaut
-					$pdf->SetDrawColor(0, 0, 0); // Bordure noire par défaut
-
-					// **2. Deuxième champ URL**
-				if (!empty($object->bank_account_link_2)) {
-						$posy_button_2 = $posy_button + $button_height + 5; // Position en dessous du premier bouton
-						$payment_url_2 = $object->bank_account_link_2;
-
-						// Style et affichage du deuxième bouton
-						$pdf->SetFillColor(34, 139, 34); // Couleur de fond (vert par exemple)
-						$pdf->SetDrawColor(34, 139, 34); // Couleur de bordure
-						$pdf->SetTextColor(255, 255, 255); // Texte blanc
-						$pdf->SetXY($posx_button, $posy_button_2);
-						$pdf->MultiCell($button_width, 8, "Payer\nvia lien 2", 1, 'C', 1); // Texte sur deux lignes
-						$pdf->Link($posx_button, $posy_button_2, $button_width, $button_height, $payment_url_2);
+							// Décaler la position pour le bouton suivant
+							$posy_button += $button_height + 2;
+						}
 					}
-
-				// **3. Troisième champ URL**
-				if (!empty($object->bank_account_link_3)) {
-					$posy_button_3 = $posy_button + 2 * ($button_height + 5); // Position en dessous du deuxième bouton
-					$payment_url_3 = $object->bank_account_link_3;
-
-					// Style et affichage du troisième bouton
-					$pdf->SetFillColor(70, 130, 180); // Couleur de fond (bleu acier)
-					$pdf->SetDrawColor(70, 130, 180); // Couleur de bordure
-					$pdf->SetTextColor(255, 255, 255); // Texte blanc
-					$pdf->SetXY($posx_button, $posy_button_3);
-					$pdf->MultiCell($button_width, 8, "Payer\nvia lien 3", 1, 'C', 1); // Texte sur deux lignes
-					$pdf->Link($posx_button, $posy_button_3, $button_width, $button_height, $payment_url_3);
-				}
-
-				// Réinitialiser les couleurs
-				$pdf->SetTextColor(0, 0, 0);
-				$pdf->SetFillColor(255, 255, 255);
-				$pdf->SetDrawColor(0, 0, 0);
-			}
 				
+					// Réinitialiser les couleurs
+					$pdf->SetTextColor(0, 0, 0);
+					$pdf->SetFillColor(255, 255, 255);
+					$pdf->SetDrawColor(0, 0, 0);
+				}
+				
+							
 				
 				
 				

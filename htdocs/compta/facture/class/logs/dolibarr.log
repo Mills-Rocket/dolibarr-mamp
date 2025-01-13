@@ -1280,3 +1280,179 @@ Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_
 Exécution ignorée pour fk_account=1
 Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
 Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Lien récupéré : https://youseeme.io/
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Lien récupéré : https://youseeme.io/
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Lien récupéré : https://youseeme.io/
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Lien récupéré : https://youseeme.io/
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Lien récupéré : https://youseeme.io/
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Lien récupéré : https://youseeme.io/
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Lien récupéré : https://youseeme.io/
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Lien récupéré : https://youseeme.io/
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Lien récupéré : https://youseeme.io/
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Lien récupéré : https://youseeme.io/
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : SELECT lien_de_paiement FROM llx_bank_account_extrafields WHERE fk_object = 1
+Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : 
+						SELECT 
+							lien_de_paiement, 
+							lien_de_paiement_en_bitcoin, 
+							lien_de_paiement_en_ethereum 
+						FROM llx_bank_account_extrafields 
+						WHERE fk_object = 1
+Liens récupérés :
+									lien_de_paiement : https://youseeme.io/
+
+									lien_de_paiement_en_bitcoin : https://github.com/
+
+									lien_de_paiement_en_ethereum : https://www.coinbase.com/fr
+Requête SQL (avant exécution) : 
+						SELECT 
+							lien_de_paiement, 
+							lien_de_paiement_en_bitcoin, 
+							lien_de_paiement_en_ethereum 
+						FROM llx_bank_account_extrafields 
+						WHERE fk_object = 1
+Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : 
+						SELECT 
+							lien_de_paiement, 
+							lien_de_paiement_en_bitcoin, 
+							lien_de_paiement_en_ethereum 
+						FROM llx_bank_account_extrafields 
+						WHERE fk_object = 1
+Liens récupérés :
+									lien_de_paiement : https://youseeme.io/
+
+									lien_de_paiement_en_bitcoin : https://github.com/
+
+									lien_de_paiement_en_ethereum : https://www.coinbase.com/fr
+Requête SQL (avant exécution) : 
+						SELECT 
+							lien_de_paiement, 
+							lien_de_paiement_en_bitcoin, 
+							lien_de_paiement_en_ethereum 
+						FROM llx_bank_account_extrafields 
+						WHERE fk_object = 1
+Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : 
+						SELECT 
+							lien_de_paiement, 
+							lien_de_paiement_en_bitcoin, 
+							lien_de_paiement_en_ethereum 
+						FROM llx_bank_account_extrafields 
+						WHERE fk_object = 1
+Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : 
+						SELECT 
+							lien_de_paiement, 
+							lien_de_paiement_en_bitcoin, 
+							lien_de_paiement_en_ethereum 
+						FROM llx_bank_account_extrafields 
+						WHERE fk_object = 1
+Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : 
+						SELECT 
+							lien_de_paiement, 
+							lien_de_paiement_en_bitcoin, 
+							lien_de_paiement_en_ethereum 
+						FROM llx_bank_account_extrafields 
+						WHERE fk_object = 1
+Liens récupérés :
+									lien_de_paiement : https://youseeme.io/
+
+									lien_de_paiement_en_bitcoin : https://github.com/
+
+									lien_de_paiement_en_ethereum : https://www.coinbase.com/fr
+Requête SQL (avant exécution) : 
+						SELECT 
+							lien_de_paiement, 
+							lien_de_paiement_en_bitcoin, 
+							lien_de_paiement_en_ethereum 
+						FROM llx_bank_account_extrafields 
+						WHERE fk_object = 1
+Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : 
+						SELECT 
+							lien_de_paiement, 
+							lien_de_paiement_en_bitcoin, 
+							lien_de_paiement_en_ethereum 
+						FROM llx_bank_account_extrafields 
+						WHERE fk_object = 1
+Liens récupérés :
+									lien_de_paiement : https://youseeme.io/
+
+									lien_de_paiement_en_bitcoin : https://github.com/
+
+									lien_de_paiement_en_ethereum : https://www.coinbase.com/fr
+Requête SQL (avant exécution) : 
+						SELECT 
+							lien_de_paiement, 
+							lien_de_paiement_en_bitcoin, 
+							lien_de_paiement_en_ethereum 
+						FROM llx_bank_account_extrafields 
+						WHERE fk_object = 1
+Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : 
+						SELECT 
+							lien_de_paiement, 
+							lien_de_paiement_en_bitcoin, 
+							lien_de_paiement_en_ethereum 
+						FROM llx_bank_account_extrafields 
+						WHERE fk_object = 1
+Exécution ignorée pour fk_account=1
+Requête SQL (avant exécution) : 
+						SELECT 
+							lien_de_paiement, 
+							lien_de_paiement_en_bitcoin, 
+							lien_de_paiement_en_ethereum 
+						FROM llx_bank_account_extrafields 
+						WHERE fk_object = 1
+Exécution ignorée pour fk_account=1

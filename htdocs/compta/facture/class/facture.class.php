@@ -2203,19 +2203,15 @@ class Facture extends CommonInvoice
 				$this->fk_account = ($obj->fk_account > 0) ? $obj->fk_account : null;
 				
 				if (!empty($this->fk_account)) {
-					// Construire la requête SQL pour récupérer le lien
-					$sql_extrafield = "SELECT lien_de_paiement FROM ".MAIN_DB_PREFIX."bank_account_extrafields WHERE fk_object = ".$this->fk_account;
-    $resql_extrafield = $this->db->query($sql_extrafield);
-    if ($resql_extrafield) {
-        $obj_extrafield = $this->db->fetch_object($resql_extrafield);
-		dol_syslog("Lien de paiement récupéré 1 : " . $this->bank_account_link, LOG_DEBUG);
-
-        if ($obj_extrafield && !empty($obj_extrafield->lien_de_paiement)) {
-            $this->bank_account_link = $obj_extrafield->lien_de_paiement;
-			dol_syslog("Lien de paiement récupéré 2 : " . $this->bank_account_link, LOG_DEBUG);
-
-        }
-    }
+					// Construire la requête SQL pour récupérer les liens
+					$sql_extrafield = "
+						SELECT 
+							lien_de_paiement, 
+							lien_de_paiement_en_bitcoin, 
+							lien_de_paiement_en_ethereum 
+						FROM " . MAIN_DB_PREFIX . "bank_account_extrafields 
+						WHERE fk_object = " . (int) $this->fk_account;
+				
 					// Log de la requête avant exécution
 					dol_syslog("SQL query about to execute: " . $sql_extrafield, LOG_DEBUG);
 					file_put_contents(
@@ -2234,20 +2230,29 @@ class Facture extends CommonInvoice
 						$resql_extrafield = $this->db->query($sql_extrafield);
 						if ($resql_extrafield) {
 							$obj_extrafield = $this->db->fetch_object($resql_extrafield);
-							if ($obj_extrafield && !empty($obj_extrafield->lien_de_paiement)) {
-								// Assigner le lien récupéré
-								$this->bank_account_link = $obj_extrafield->lien_de_paiement;
+							if ($obj_extrafield) {
+								// Assigner les valeurs des champs récupérés
+								$this->bank_account_link = $obj_extrafield->lien_de_paiement ?? null;
+								$this->bank_account_link_bitcoin = $obj_extrafield->lien_de_paiement_en_bitcoin ?? null;
+								$this->bank_account_link_ethereum = $obj_extrafield->lien_de_paiement_en_ethereum ?? null;
 				
-								// Log du lien récupéré
-								dol_syslog("Bank account payment link retrieved: " . $this->bank_account_link, LOG_DEBUG);
+								// Log des liens récupérés
+								dol_syslog("Bank account links retrieved: 
+									lien_de_paiement=" . $this->bank_account_link . ",
+									lien_de_paiement_en_bitcoin=" . $this->bank_account_link_bitcoin . ",
+									lien_de_paiement_en_ethereum=" . $this->bank_account_link_ethereum, LOG_DEBUG);
+				
 								file_put_contents(
 									'/Applications/MAMP/htdocs/dolibarr/htdocs/compta/facture/class/logs/dolibarr.log',
-									"Lien récupéré : " . $this->bank_account_link . "\n",
+									"Liens récupérés :
+									lien_de_paiement : " . $this->bank_account_link . "\n
+									lien_de_paiement_en_bitcoin : " . $this->bank_account_link_bitcoin . "\n
+									lien_de_paiement_en_ethereum : " . $this->bank_account_link_ethereum . "\n",
 									FILE_APPEND
 								);
 							} else {
 								// Aucun lien trouvé
-								dol_syslog("No payment link found for fk_account=" . $this->fk_account, LOG_WARNING);
+								dol_syslog("No payment links found for fk_account=" . $this->fk_account, LOG_WARNING);
 								file_put_contents(
 									'/Applications/MAMP/htdocs/dolibarr/htdocs/compta/facture/class/logs/dolibarr.log',
 									"Aucun lien trouvé pour fk_account=" . $this->fk_account . "\n",
@@ -2281,7 +2286,7 @@ class Facture extends CommonInvoice
 						FILE_APPEND
 					);
 				}
-				
+							
 				
 				
 				

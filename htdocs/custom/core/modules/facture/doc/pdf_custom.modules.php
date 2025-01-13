@@ -29,9 +29,9 @@
  */
 
 /**
- *	\file       htdocs/core/modules/facture/doc/pdf_crabe.modules.php
+ *	\file       /Applications/MAMP/htdocs/dolibarr/htdocs/custom/facturemodels/pdf_custom.modules.php
  *	\ingroup    invoice
- *	\brief      File of class to generate customers invoices from crabe model
+ *	\brief      File of class to generate customers invoices from custom model
  */
 
 require_once DOL_DOCUMENT_ROOT.'/core/modules/facture/modules_facture.php';
@@ -42,9 +42,9 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php';
 
 
 /**
- *	Class to generate the customer invoice PDF with template Crabe
+ *	Class to generate the customer invoice PDF with template Custom
  */
-class pdf_crabe extends ModelePDFFactures
+class pdf_custom extends ModelePDFFactures
 {
 	/**
 	 * @var DoliDB Database handler
@@ -54,7 +54,7 @@ class pdf_crabe extends ModelePDFFactures
 	/**
 	 * @var string model name
 	 */
-	public $name;
+	public $name = 'custom';
 
 	/**
 	 * @var string model description (short text)
@@ -106,8 +106,8 @@ class pdf_crabe extends ModelePDFFactures
 		$langs->loadLangs(array("main", "bills"));
 
 		$this->db = $db;
-		$this->name = "crabe";
-		$this->description = $langs->trans('PDFCrabeDescription');
+		$this->name = "Youseeme";
+		$this->description = $langs->trans('Youseeme invoice');
 		$this->update_main_doc_field = 1; // Save the name of generated file as the main doc when generating a doc with this template
 
 		// Dimension page
@@ -299,7 +299,7 @@ class pdf_crabe extends ModelePDFFactures
 				$default_font_size = pdf_getPDFFontSize($outputlangs); // Must be after pdf_getInstance
 				$pdf->SetAutoPageBreak(1, 0);
 
-				$heightforinfotot = 50 + (4 * $nbpayments); // Height reserved to output the info and total part and payment part
+				$heightforinfotot = 70 + (4 * $nbpayments); // Height reserved to output the info and total part and payment part
 				if ($heightforinfotot > 220) {
 					$heightforinfotot = 220;
 				}
@@ -473,17 +473,41 @@ class pdf_crabe extends ModelePDFFactures
 						'module_width' => 1, // width of a single module in points
 						'module_height' => 1 // height of a single module in points
 					);
-					$pdf->write2DBarcode($qrcodestring, 'QRCODE,M', $this->marge_gauche, $tab_top - 5, 25, 25, $styleQr, 'N');
+					
+// Dimensions du QR code
+//$width = 15; // Largeur du QR code
+//$height = 15; // Hauteur du QR code
 
-					if (getDolGlobalString('INVOICE_ADD_EPC_QR_CODE') == '1' && (empty($object->mode_reglement_code) || $object->mode_reglement_code == 'VIR')) {
-						if ($object->fk_account > 0 || $object->fk_bank > 0 || getDolGlobalInt('FACTURE_RIB_NUMBER')) {
-							$pdf->SetXY($this->marge_gauche + 30, $pdf->GetY() - 15);
-							$pdf->SetFont('', '', $default_font_size - 4);
-							$pdf->MultiCell(40, 3, $langs->transnoentitiesnoconv("INVOICE_ADD_EPC_QR_CODEPay"), 0, 'L', 0);
-						}
-					}
+// Position verticale tout en bas de la page (hors footer)
+$posy = $pdf->getPageHeight() - 30 - $height; // Tout en bas, hors footer
 
-					$extra_under_address_shift += 25;
+// Position horizontale du QR code (aligné à droite)
+$posx_qr = $pdf->getPageWidth() - $this->marge_droite - $width;
+
+// Vérifier si le texte et le QR code doivent être ajoutés
+if (getDolGlobalString('INVOICE_ADD_EPC_QR_CODE') == '1' && (empty($object->mode_reglement_code) || $object->mode_reglement_code == 'VIR')) {
+    if ($object->fk_account > 0 || $object->fk_bank > 0 || getDolGlobalInt('FACTURE_RIB_NUMBER')) {
+        // Position et largeur du texte (à gauche du QR code)
+        $text_width = 60; // Largeur allouée pour le texte
+        $posx_text = $posx_qr - $text_width - 5; // Décalé vers la gauche
+
+        // Ajouter le texte à gauche du QR code
+        //$pdf->SetXY($posx_text, $posy); // Même hauteur que le QR code
+       // $pdf->SetFont('', '', $default_font_size + 2); // Police légèrement agrandie
+      //  $pdf->MultiCell($text_width, 5, "Scannez ce QR Code\npour effectuer le paiement.", 0, 'L'); // Aligné à gauche
+
+        // Ajouter le QR code aligné à droite
+        //$pdf->write2DBarcode($qrcodestring, 'QRCODE,M', $posx_qr, $posy, $width, $height, $styleQr, 'N');
+    }
+}
+
+
+
+
+
+					
+
+					//$extra_under_address_shift += 25;
 				}
 
 				// Call hook printUnderHeaderPDFline
@@ -867,28 +891,116 @@ class pdf_crabe extends ModelePDFFactures
 
 				
 				// Ajouter le lien de paiement
-//if (!empty($object->bank_account_link)) {
-    // Ajuster la position en fonction du contenu précédent
-    //$adjustment = -40; // Ajustement dynamique pour remonter légèrement
-   // $posy = max($posy - $adjustment, $this->marge_haute); // Empêche de dépasser la marge haute
+				if (!empty($object->bank_account_link)) {
+					// **1. QR code et texte "Scanner le QRCODE pour payer par virement" à gauche**
+					// Dimensions du QR code
+					$width_qr = 15; // Largeur du QR code
+					$height_qr = 15; // Hauteur du QR code
+				
+					// Position et dimensions pour encadrer QR code et texte
+					$box_width = 80; // Largeur du cadre
+					$box_height = 25; // Hauteur du cadre
+					$posx_box = $this->marge_gauche; // Aligné à gauche
+					$posy_box = $pdf->getPageHeight() - $box_height - 20; // Position en bas de la page
+				
+					// Position du QR code dans le cadre
+					$posx_qr = $posx_box + 5; // QR code légèrement décalé à l'intérieur du cadre
+					$posy_qr = $posy_box + 5; // QR code légèrement décalé vers le bas
+				
+					// Position du texte dans le cadre
+					$text_width = $box_width - $width_qr - 15; // Largeur pour le texte à droite du QR code
+					$posx_text = $posx_qr + $width_qr + 5; // À droite du QR code
+					$posy_text = $posy_qr; // Aligné verticalement avec le QR code
+				
+					// Dessiner le cadre autour du QR code et du texte
+					$pdf->SetDrawColor(0, 0, 0); // Couleur de la bordure noire
+					$pdf->SetLineWidth(0.2); // Épaisseur de la bordure
+					$pdf->Rect($posx_box, $posy_box, $box_width, $box_height); // Dessiner le rectangle
+				
+					// Ajouter le QR code
+					$pdf->write2DBarcode($qrcodestring, 'QRCODE,M', $posx_qr, $posy_qr, $width_qr, $height_qr, null);
+				
+					// Ajouter le texte "Scanner le QRCODE pour payer par virement"
+					$pdf->SetXY($posx_text, $posy_text);
+					$pdf->SetFont('', '', 10); // Texte standard
+					$pdf->MultiCell($text_width, 5, "Scanner le QRCODE\npour payer par virement", 0, 'L'); // Texte aligné à gauche
+				
+					// **2. Bouton de paiement à droite, aligné sous le total**
+					// Dimensions et position du bouton
+					$button_width = 60; // Largeur du bouton
+					$button_height = 10; // Hauteur du bouton
+				
+					// Récupérer la position du total
+					// Si `$posy_total` est défini par ton modèle, utilise-le. Sinon, définis une valeur par défaut.
+					$posy_total = isset($tab_top_total) ? $tab_top_total : $pdf->getPageHeight() - 80;
+				
+					// Calculer la position sous le total
+					$posx_button = $pdf->getPageWidth() - $this->marge_droite - $button_width; // Aligné à droite
+					$posy_button = $posy_total + 5; // Ajouter une marge de 10 points sous le total
+				
+					// URL du bouton
+					$payment_url = $object->bank_account_link;
+				
+					// Style du bouton
+					$pdf->SetFillColor(186, 148, 64); // Couleur de fond (#ba9440)
+					$pdf->SetDrawColor(186, 148, 64); // Couleur de la bordure
+					$pdf->SetTextColor(255, 255, 255); // Texte blanc
+					$pdf->SetFont('', 'B', 10); // Texte en gras
+				
+					// Dessiner le bouton
+					$pdf->SetXY($posx_button, $posy_button);
+					$pdf->Cell($button_width, $button_height, "Payer en cryptomonnaie", 1, 1, 'C', 1); // Texte centré, encadré et avec un fond coloré
+				
+					// Ajouter un lien cliquable
+					$pdf->Link($posx_button, $posy_button, $button_width, $button_height, $payment_url);
+				
+					// Réinitialiser les couleurs pour le reste du PDF
+					$pdf->SetTextColor(0, 0, 0); // Texte noir par défaut
+					$pdf->SetFillColor(255, 255, 255); // Fond blanc par défaut
+					$pdf->SetDrawColor(0, 0, 0); // Bordure noire par défaut
 
-    // Vérifiez si le lien est trop proche du pied de page
-   // if ($posy + 10 > $heightforfooter) {
-      //  $pdf->AddPage(); // Nouvelle page si nécessaire
-     //   $posy = $this->marge_haute; // Réinitialisez pour la nouvelle page
-  //  }
+					// **2. Deuxième champ URL**
+				if (!empty($object->bank_account_link_2)) {
+						$posy_button_2 = $posy_button + $button_height + 5; // Position en dessous du premier bouton
+						$payment_url_2 = $object->bank_account_link_2;
 
-    // Afficher le lien
-    $pdf->SetXY($this->marge_gauche, $posy);
-    $pdf->MultiCell(190, 5, "Lien de paiement : " . $object->bank_account_link, 0, 'L');
-    $posy += 10; // Ajustez la position pour les éléments suivants
-}
+						// Style et affichage du deuxième bouton
+						$pdf->SetFillColor(34, 139, 34); // Couleur de fond (vert par exemple)
+						$pdf->SetDrawColor(34, 139, 34); // Couleur de bordure
+						$pdf->SetTextColor(255, 255, 255); // Texte blanc
+						$pdf->SetXY($posx_button, $posy_button_2);
+						$pdf->MultiCell($button_width, 8, "Payer\nvia lien 2", 1, 'C', 1); // Texte sur deux lignes
+						$pdf->Link($posx_button, $posy_button_2, $button_width, $button_height, $payment_url_2);
+					}
 
+				// **3. Troisième champ URL**
+				if (!empty($object->bank_account_link_3)) {
+					$posy_button_3 = $posy_button + 2 * ($button_height + 5); // Position en dessous du deuxième bouton
+					$payment_url_3 = $object->bank_account_link_3;
+
+					// Style et affichage du troisième bouton
+					$pdf->SetFillColor(70, 130, 180); // Couleur de fond (bleu acier)
+					$pdf->SetDrawColor(70, 130, 180); // Couleur de bordure
+					$pdf->SetTextColor(255, 255, 255); // Texte blanc
+					$pdf->SetXY($posx_button, $posy_button_3);
+					$pdf->MultiCell($button_width, 8, "Payer\nvia lien 3", 1, 'C', 1); // Texte sur deux lignes
+					$pdf->Link($posx_button, $posy_button_3, $button_width, $button_height, $payment_url_3);
+				}
+
+				// Réinitialiser les couleurs
+				$pdf->SetTextColor(0, 0, 0);
+				$pdf->SetFillColor(255, 255, 255);
+				$pdf->SetDrawColor(0, 0, 0);
+			}
 				
 				
-
-
-
+				
+				
+				
+				
+				
+				
+				
 				// Pagefoot
 				$this->_pagefoot($pdf, $object, $outputlangs, 0, $this->getHeightForQRInvoice($pdf->getPage(), $object, $langs));
 				if (method_exists($pdf, 'AliasNbPages')) {
